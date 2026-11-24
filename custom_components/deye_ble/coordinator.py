@@ -465,7 +465,10 @@ class DeyeBleCoordinator(DataUpdateCoordinator):
             # here. Re-merging would be a line no test could ever fail on.
             return self.data
 
-        _LOGGER.warning("BLE poll failed for %s: %s", self._address, exc)
+        if self.last_update_success:
+            _LOGGER.warning("BLE poll failed for %s: %s", self._address, exc)
+        else:
+            _LOGGER.debug("BLE poll failed for %s: %s", self._address, exc)
         raise UpdateFailed(str(exc)) from exc
 
     async def async_write(self, reg: int, value: int) -> None:
